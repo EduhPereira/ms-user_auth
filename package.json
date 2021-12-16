@@ -1,0 +1,17 @@
+{
+  "name": "ms-user_auth",
+  "version": "1.0.0",
+  "description": "a micro service to handle user authorization through registration, search, editing and deletion",
+  "main": "./dist/index.js",
+  "scripts": {
+    "start": "node ./",
+    "build": "tsc -p .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Eduardo Pereira",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^17.0.0",
+    "typescript": "^4.5.4"
+  }
+}
