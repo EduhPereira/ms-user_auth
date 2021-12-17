@@ -34,8 +34,10 @@ userRoute.get(
 //post user
 userRoute.post(
   "/users",
-  (request: Request, response: Response, next: NextFunction) => {
+  async (request: Request, response: Response, next: NextFunction) => {
     const newUser = request.body;
+    const uuid = await userRepository.create(newUser);
+    response.status(201).json({ message: `user ${uuid} registered` });
   }
 );
 //put user
