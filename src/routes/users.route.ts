@@ -21,12 +21,14 @@ userRoute.get(
 //get user by id
 userRoute.get(
   "/users/:uuid",
-  (
+  async (
     request: Request<{ uuid: string }>,
     response: Response,
     next: NextFunction
   ) => {
     const uuid = request.params.uuid;
+    const user = await userRepository.getById(uuid);
+    return response.json(user);
   }
 );
 //post user
