@@ -58,11 +58,13 @@ usersRoute.put(
 //delete user
 usersRoute.delete(
   "/users/:uuid",
-  (
+  async (
     request: Request<{ uuid: string }>,
     response: Response,
     next: NextFunction
   ) => {
     const uuid = request.params.uuid;
+    await userRepository.remove(uuid);
+    return response.status(204).json();
   }
 );
