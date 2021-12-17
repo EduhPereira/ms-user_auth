@@ -33,11 +33,28 @@ class UserRepository {
         RETURNING uuid
     `;
 
-    const values = [user.username, user.password];
-
-    const { rows } = await db.query<{ uuid: string }>(script, values);
+    const { rows } = await db.query<{ uuid: string }>(script, [
+      user.username,
+      user.password,
+    ]);
     const [newUser] = rows;
     return newUser.uuid;
+  }
+
+  async update(user: User): Promise<void> {
+    const script = `
+        UPDATE application_user 
+        SET 
+          username = $1,
+          password = crypt($2, 'my_salt') 
+        WHERE uuid = $3
+    `;
+
+    await db.query<{ uuid: string }>(script, [
+      user.username,
+      user.password,
+      user.uuid,
+    ]);
   }
 }
 

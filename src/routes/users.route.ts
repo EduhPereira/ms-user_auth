@@ -1,17 +1,17 @@
 import { Router, Request, Response, NextFunction } from "express";
 import userRepository from "../repositories/user.repository";
 
-export const userRoute = Router();
+export const usersRoute = Router();
 
 //status
-userRoute.get(
+usersRoute.get(
   "/users/status",
   (request: Request, response: Response, next: NextFunction) => {
     response.status(200).json({ message: "service online" });
   }
 );
 //get users
-userRoute.get(
+usersRoute.get(
   "/users",
   async (request: Request, response: Response, next: NextFunction) => {
     const users = await userRepository.getAll();
@@ -19,7 +19,7 @@ userRoute.get(
   }
 );
 //get user by id
-userRoute.get(
+usersRoute.get(
   "/users/:uuid",
   async (
     request: Request<{ uuid: string }>,
@@ -32,7 +32,7 @@ userRoute.get(
   }
 );
 //post user
-userRoute.post(
+usersRoute.post(
   "/users",
   async (request: Request, response: Response, next: NextFunction) => {
     const newUser = request.body;
@@ -41,19 +41,22 @@ userRoute.post(
   }
 );
 //put user
-userRoute.put(
+usersRoute.put(
   "/users/:uuid",
-  (
+  async (
     request: Request<{ uuid: string }>,
     response: Response,
     next: NextFunction
   ) => {
     const uuid = request.params.uuid;
     const updatedUser = request.body;
+    updatedUser.uuid = uuid;
+    await userRepository.update(updatedUser);
+    response.status(200).json();
   }
 );
 //delete user
-userRoute.delete(
+usersRoute.delete(
   "/users/:uuid",
   (
     request: Request<{ uuid: string }>,
