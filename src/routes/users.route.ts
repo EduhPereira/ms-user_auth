@@ -26,9 +26,13 @@ usersRoute.get(
     response: Response,
     next: NextFunction
   ) => {
-    const uuid = request.params.uuid;
-    const user = await userRepository.getById(uuid);
-    return response.json(user);
+    try {
+      const uuid = request.params.uuid;
+      const user = await userRepository.getById(uuid);
+      return response.json(user);
+    } catch (error) {
+      next(error);
+    }
   }
 );
 //post user

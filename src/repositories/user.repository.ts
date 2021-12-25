@@ -1,4 +1,5 @@
 import { db } from "../db";
+import { DatabaseError } from "../models/errors/database.error.model";
 import { User } from "../models/user.model";
 
 class UserRepository {
@@ -12,15 +13,19 @@ class UserRepository {
   }
 
   async getById(uuid: string): Promise<User> {
-    const query = `
+    try {
+      const query = `
         SELECT uuid, username 
         FROM application_user 
         WHERE uuid = $1
       `;
 
-    const { rows } = await db.query<User>(query, [uuid]);
-    const [user] = rows;
-    return user || {};
+      const { rows } = await db.query<User>(query, [uuid]);
+      const [user] = rows;
+      return user || {};
+    } catch (error) {
+      throw new DatabaseError("error searching by ID", error);
+    }
   }
 
   async create(user: User): Promise<string> {
@@ -64,6 +69,29 @@ class UserRepository {
     `;
 
     await db.query(query, [uuid]);
+  }
+
+  async findByUsernameAndPassword(
+    username: string,
+    password: string
+  ): Promise<User | null> {
+    try {
+      const query = `
+            SELECT uuid, username
+            FROM application_user
+            WHERE username = $1
+            AND password = crypt($2, 'my_salt')
+        `;
+      const values = [username, password];
+      const { rows } = await db.query<User>(query, values);
+      const [user] = rows;
+      return user || null;
+    } catch (error) {
+      throw new DatabaseError(
+        "Error in searching by username and password",
+        error
+      );
+    }
   }
 }
 
