@@ -1,4 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
+import { bearerAuthentication } from "../middlewares/bearer_authentication.middleware";
 import userRepository from "../repositories/user.repository";
 
 export const usersRoute = Router();
@@ -13,6 +14,7 @@ usersRoute.get(
 //get users
 usersRoute.get(
   "/users",
+  bearerAuthentication,
   async (request: Request, response: Response, next: NextFunction) => {
     const users = await userRepository.getAll();
     return response.json(users);
@@ -21,6 +23,7 @@ usersRoute.get(
 //get user by id
 usersRoute.get(
   "/users/:uuid",
+  bearerAuthentication,
   async (
     request: Request<{ uuid: string }>,
     response: Response,
@@ -38,6 +41,7 @@ usersRoute.get(
 //post user
 usersRoute.post(
   "/users",
+  bearerAuthentication,
   async (request: Request, response: Response, next: NextFunction) => {
     const newUser = request.body;
     const uuid = await userRepository.create(newUser);
@@ -47,6 +51,7 @@ usersRoute.post(
 //put user
 usersRoute.put(
   "/users/:uuid",
+  bearerAuthentication,
   async (
     request: Request<{ uuid: string }>,
     response: Response,
@@ -62,6 +67,7 @@ usersRoute.put(
 //delete user
 usersRoute.delete(
   "/users/:uuid",
+  bearerAuthentication,
   async (
     request: Request<{ uuid: string }>,
     response: Response,
